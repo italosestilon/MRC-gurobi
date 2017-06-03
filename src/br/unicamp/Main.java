@@ -77,7 +77,7 @@ public class Main {
         int l[] = {0, 4, 9, 12, 14};
 
         for(int i : l){
-            model.addConstr(X[i], GRB.EQUAL, 1.0, "ex");
+            //model.addConstr(X[i], GRB.EQUAL, 1.0, "ex");
         }
 
         model.optimize();
