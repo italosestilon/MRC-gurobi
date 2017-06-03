@@ -4,7 +4,7 @@ import gurobi.*;
 import java.util.*;
 
 public class Main {
-    static int s = 50;
+    static int s = 5;
     static int c;
     static int m[][];
     static Random random = new Random(4);
@@ -74,18 +74,29 @@ public class Main {
             }
         }
 
+        int l[] = {0, 4, 9, 12, 14};
+
+        for(int i : l){
+            model.addConstr(X[i], GRB.EQUAL, 1.0, "ex");
+        }
+
         model.optimize();
+
+        for(int i = 0; i < c; i++){
+            System.out.println(X[i].get(GRB.StringAttr.VarName)
+                    + " " +X[i].get(GRB.DoubleAttr.X));
+        }
 
     }
 
     public static void instances(){
-        List<Set<Integer>> sets = new ArrayList<>();
+        ArrayList<LinkedList<Integer>> sets = new ArrayList<>();;
         int k;
         c = 0;
         for(int i = 0; i < s; i++){
-            k = random.nextInt(6) + 1;
+            k = random.nextInt(5) + 1;
             System.out.println(k);
-            Set set = new HashSet();
+            LinkedList<Integer> set = new LinkedList<>();
             for(int j = 0; j < k; j++){
                 set.add(c++);
             }
@@ -99,12 +110,12 @@ public class Main {
 
         for(int i = 0; i < s; i++){
             for(int e : sets.get(i)) {
-                for (int j = 0; j < s; j++) {
+                for (int j = i+1; j < s; j++) {
                     if(i == j) continue;
                     for(int f: sets.get(j)){
                         if(m[e][f] == 0) {
                             m[e][f] = random.nextInt(8) + 1;
-                            m[f][e] = m[e][f];
+                            //m[f][e] = 0;
                         }
                     }
                 }
