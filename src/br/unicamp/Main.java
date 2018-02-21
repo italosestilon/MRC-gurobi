@@ -1,18 +1,29 @@
 package br.unicamp;
 import gurobi.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    static int s = 5;
+    static int s;
     static int c;
     static int m[][];
-    static Random random = new Random(4);
+    static Random random = new Random();
     public static void main(String[] args) throws GRBException {
+
+        if(args.length < 1) {
+            System.out.println("You must provide an instance path.");
+            return;
+        }
+
+        String instancePath = args[0];
+
+        getInstance(instancePath);
+
         GRBEnv env = new GRBEnv("mrc.log");
-
-        instances();
-
         GRBModel model = new GRBModel(env);
         GRBVar X[] = new GRBVar[c];
         for(int i = 0; i < c; i++){
@@ -89,45 +100,40 @@ public class Main {
 
     }
 
-    public static void instances(){
-        ArrayList<LinkedList<Integer>> sets = new ArrayList<>();;
-        int k;
-        c = 0;
-        for(int i = 0; i < s; i++){
-            k = random.nextInt(5) + 1;
-            System.out.println(k);
-            LinkedList<Integer> set = new LinkedList<>();
-            for(int j = 0; j < k; j++){
-                set.add(c++);
+    public static void getInstance(String instancePath) {
+
+        try(BufferedReader br = new BufferedReader(new FileReader(instancePath))) {
+
+            String line = br.readLine();
+
+            s = Integer.valueOf(line);
+            c = 0;
+            for(int i = 0; i < s; i++){
+                line = br.readLine();
+                c += Integer.valueOf(line);
             }
 
-            sets.add(set);
+            m = new int[c][c];
 
-            //System.out.println(set);
-        }
+            while (line != null) {
 
-        m = new int[c][c];
+                line = br.readLine();
 
-        for(int i = 0; i < s; i++){
-            for(int e : sets.get(i)) {
-                for (int j = i+1; j < s; j++) {
-                    if(i == j) continue;
-                    for(int f: sets.get(j)){
-                        if(m[e][f] == 0) {
-                            m[e][f] = random.nextInt(8) + 1;
-                            //m[f][e] = 0;
-                        }
-                    }
+                if(line == null){
+                    continue;
                 }
-            }
-        }
 
-        for(int i = 0; i < c; i++){
-            for(int j = 0; j < c; j++){
-                System.out.print(m[i][j] + " ");
+                String split[] = line.split(" ");
+                Integer x = Integer.valueOf(split[0]);
+                Integer y = Integer.valueOf(split[1]);
+                Integer v = Integer.valueOf(split[2]);
+                m[x][y] = v;
             }
 
-            System.out.println();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
