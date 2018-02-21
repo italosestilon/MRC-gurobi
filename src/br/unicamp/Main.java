@@ -85,18 +85,14 @@ public class Main {
             }
         }
 
-        int l[] = {0, 4, 9, 12, 14};
-
-        for(int i : l){
-            //model.addConstr(X[i], GRB.EQUAL, 1.0, "ex");
-        }
-
         model.optimize();
 
-        for(int i = 0; i < c; i++){
+        /*for(int i = 0; i < c; i++){
             System.out.println(X[i].get(GRB.StringAttr.VarName)
                     + " " +X[i].get(GRB.DoubleAttr.X));
-        }
+        }*/
+
+        System.out.println("Resultado: " + model.get(GRB.DoubleAttr.ObjVal));
 
     }
 
